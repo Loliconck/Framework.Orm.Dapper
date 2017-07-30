@@ -5,34 +5,11 @@ namespace Framework.Orm.Dapper.Core
 {
     public class ConfigurationContainer
     {
-        private static ConnectionStringManager connectionStrings;
+        internal static ConnectionStringManager ConnectionStringManager;
 
         static ConfigurationContainer()
         {
-            connectionStrings = new ConnectionStringManager();
-        }
-
-        /// <summary>
-        /// 新增连接字符串
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="connectionString"></param>
-        public static void AddConnectionString(string key, string connectionString)
-        {
-            if (string.IsNullOrEmpty(connectionStrings[key]))
-            {
-                connectionStrings[key] = connectionString;
-            }
-        }
-
-        /// <summary>
-        /// 根据KEY获取连接字符串
-        /// </summary>
-        /// <param name="key">连接字符串的KEY</param>
-        /// <returns>连接字符串</returns>
-        public static string GetConnectionString(string key)
-        {
-            return connectionStrings[key];
+            ConnectionStringManager = new ConnectionStringManager();
         }
     }
 
@@ -75,6 +52,29 @@ namespace Framework.Orm.Dapper.Core
                 {
                     ConnectionStringsDic[key] = value;
                 }
+            }
+        }
+
+        /// <summary>
+        /// 根据KEY获取连接字符串
+        /// </summary>
+        /// <param name="key">连接字符串的KEY</param>
+        /// <returns>连接字符串</returns>
+        public string GetConnectionString(string key)
+        {
+            return this[key];
+        }
+
+        /// <summary>
+        /// 新增连接字符串
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="connectionString"></param>
+        public void AddConnectionString(string key, string connectionString)
+        {
+            if (!string.IsNullOrEmpty(key))
+            {
+                this[key] = connectionString;
             }
         }
     }

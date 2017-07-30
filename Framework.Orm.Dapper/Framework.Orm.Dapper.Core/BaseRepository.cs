@@ -8,6 +8,7 @@ namespace Framework.Orm.Dapper.Core
     {
         private IDbConnection connection;
         private string connectionString;
+        private string connectionStringKey;
 
         public IDbConnection GetConnection()
         {
@@ -20,13 +21,12 @@ namespace Framework.Orm.Dapper.Core
         {
             get
             {
-                ConfigurationContainer.GetConnectionString()
                 if (!string.IsNullOrEmpty(connectionString))
                 {
                     return connectionString;
                 }
 
-                connectionString = ConfigurationContainer.ConnectionString;
+                connectionString = ConfigurationContainer.ConnectionStringManager[connectionStringKey];
                 if (!string.IsNullOrEmpty(connectionString))
                 {
                     return connectionString;
@@ -36,6 +36,14 @@ namespace Framework.Orm.Dapper.Core
             set
             {
                 connectionString = value;
+            }
+        }
+
+        public virtual string ConnectionStringKey
+        {
+            set
+            {
+                connectionStringKey = value;
             }
         }
 
