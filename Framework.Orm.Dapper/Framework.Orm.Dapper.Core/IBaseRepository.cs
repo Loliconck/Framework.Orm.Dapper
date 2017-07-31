@@ -1,10 +1,11 @@
-﻿namespace Framework.Orm.Dapper.Core
+﻿using System.Collections.Generic;
+
+namespace Framework.Orm.Dapper.Core
 {
     public interface IBaseRepository<T> : IRepository where T : BaseEntity
     {
-        string ConnectionStringKey
-        {
-            set;
-        }
+        string SetConnectionStringKey();
+
+        List<T> GetList(string sql, object param);
     }
 }

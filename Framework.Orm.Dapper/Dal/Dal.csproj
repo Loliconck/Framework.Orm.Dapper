@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9BE90F60-F376-49EF-B3D1-EFEE61829430}</ProjectGuid>
+    <ProjectGuid>{3E2179DF-59CB-4A84-8501-8B29F92E4D89}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Framework.Orm.Dapper.Core</RootNamespace>
-    <AssemblyName>Framework.Orm.Dapper.Core</AssemblyName>
+    <RootNamespace>Dal</RootNamespace>
+    <AssemblyName>Dal</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,12 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dapper, Version=1.50.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dapper.1.50.2\lib\net451\Dapper.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -45,15 +40,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseEntity.cs" />
-    <Compile Include="BaseRepository.cs" />
-    <Compile Include="ConfigurationContainer.cs" />
-    <Compile Include="IBaseRepository.cs" />
-    <Compile Include="IRepository.cs" />
+    <Compile Include="ComboShoppingCartCommoditysDAL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\Framework.Orm.Dapper.Core\Framework.Orm.Dapper.Core.csproj">
+      <Project>{9be90f60-f376-49ef-b3d1-efee61829430}</Project>
+      <Name>Framework.Orm.Dapper.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{9b0c2ec1-7b68-4a1e-a7e6-1d5814b1fdd8}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

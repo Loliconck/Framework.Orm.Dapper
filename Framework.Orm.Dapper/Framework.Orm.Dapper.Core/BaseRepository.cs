@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Dapper;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace Framework.Orm.Dapper.Core
 {
@@ -10,14 +13,23 @@ namespace Framework.Orm.Dapper.Core
         private string connectionString;
         private string connectionStringKey;
 
-        public IDbConnection GetConnection()
+        private IDbConnection GetConnection()
         {
             connection = new SqlConnection(ConnectionString);
 
             return connection;
         }
 
-        public string ConnectionString
+        public List<T> GetList(string sql, object param)
+        {
+            using (connection = GetConnection())
+            {
+                var result = connection.Query<T>(sql, param);
+                return result == null ? null : result.ToList();
+            }
+        }
+
+        public virtual string ConnectionString
         {
             get
             {
@@ -26,6 +38,7 @@ namespace Framework.Orm.Dapper.Core
                     return connectionString;
                 }
 
+                connectionStringKey = SetConnectionStringKey();
                 connectionString = ConfigurationContainer.ConnectionStringManager[connectionStringKey];
                 if (!string.IsNullOrEmpty(connectionString))
                 {
@@ -39,12 +52,9 @@ namespace Framework.Orm.Dapper.Core
             }
         }
 
-        public virtual string ConnectionStringKey
+        public virtual string SetConnectionStringKey()
         {
-            set
-            {
-                connectionStringKey = value;
-            }
+            return ConfigurationContainer.ConnectionStringManager.GetDefaultKey();
         }
 
         public void Dispose()

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 
 namespace Framework.Orm.Dapper.Core
 {
@@ -8,6 +10,11 @@ namespace Framework.Orm.Dapper.Core
         internal static ConnectionStringManager ConnectionStringManager;
 
         static ConfigurationContainer()
+        {
+
+        }
+
+        public static void Init()
         {
             ConnectionStringManager = new ConnectionStringManager();
         }
@@ -76,6 +83,20 @@ namespace Framework.Orm.Dapper.Core
             {
                 this[key] = connectionString;
             }
+        }
+
+        public string GetDefaultKey()
+        {
+            if ((ConnectionStringsDic == null || ConnectionStringsDic.Count <= 0))
+                return string.Empty;
+            foreach (var key in ConnectionStringsDic.Keys)
+            {
+                if (!String.Equals(key, "LocalSqlServer"))
+                {
+                    return key;
+                }
+            }
+            return string.Empty;
         }
     }
 }
