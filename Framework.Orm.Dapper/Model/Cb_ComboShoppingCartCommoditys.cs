@@ -1,4 +1,4 @@
-﻿using Framework.Orm.Dapper.Core;
+﻿using Framework.Orm.Dapper.Domain;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;

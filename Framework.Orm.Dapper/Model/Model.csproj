@@ -45,9 +45,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Framework.Orm.Dapper.Core\Framework.Orm.Dapper.Core.csproj">
+    <ProjectReference Include="..\Framework.Orm.Dapper\Framework.Orm.Dapper.csproj">
       <Project>{9be90f60-f376-49ef-b3d1-efee61829430}</Project>
-      <Name>Framework.Orm.Dapper.Core</Name>
+      <Name>Framework.Orm.Dapper</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

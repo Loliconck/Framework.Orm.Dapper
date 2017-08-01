@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.Orm.Dapper.Core", "Framework.Orm.Dapper.Core\Framework.Orm.Dapper.Core.csproj", "{9BE90F60-F376-49EF-B3D1-EFEE61829430}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.Orm.Dapper", "Framework.Orm.Dapper\Framework.Orm.Dapper.csproj", "{9BE90F60-F376-49EF-B3D1-EFEE61829430}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DapperUnitTest", "DapperUnitTest\DapperUnitTest.csproj", "{AE7E66BE-8EED-4395-B1AF-06D63C459844}"
 EndProject

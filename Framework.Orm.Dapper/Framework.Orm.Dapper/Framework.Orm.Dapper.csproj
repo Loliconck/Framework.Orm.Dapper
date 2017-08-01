@@ -7,8 +7,8 @@
     <ProjectGuid>{9BE90F60-F376-49EF-B3D1-EFEE61829430}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Framework.Orm.Dapper.Core</RootNamespace>
-    <AssemblyName>Framework.Orm.Dapper.Core</AssemblyName>
+    <RootNamespace>Framework.Orm.Dapper</RootNamespace>
+    <AssemblyName>Framework.Orm.Dapper</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -45,15 +45,36 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseEntity.cs" />
+    <Compile Include="ConnectionStringManager.cs" />
+    <Compile Include="Core\DapperExtension.cs" />
+    <Compile Include="Domain\Attributes\BaseAttribute.cs" />
+    <Compile Include="Domain\Attributes\IdentityAttribute.cs" />
+    <Compile Include="Domain\Attributes\IgnoreAttribute.cs" />
+    <Compile Include="Domain\Attributes\KeyAttribute.cs" />
+    <Compile Include="Domain\BaseEntity.cs" />
     <Compile Include="BaseRepository.cs" />
     <Compile Include="ConfigurationContainer.cs" />
+    <Compile Include="Domain\Enum\ColumnTypeEnum.cs" />
+    <Compile Include="Domain\Enum\OrderByTypeEnum.cs" />
+    <Compile Include="Domain\PageParam.cs" />
+    <Compile Include="EntityInfoManager.cs" />
     <Compile Include="IBaseRepository.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlBuilder\BaseSqlAdapter.cs" />
+    <Compile Include="SqlBuilder\DataAdapter\SqlServerAdapter.cs" />
+    <Compile Include="SqlBuilder\Infrastructure\EntityInfo.cs" />
+    <Compile Include="SqlBuilder\Infrastructure\ParamColumnModel.cs" />
+    <Compile Include="SqlBuilder\Infrastructure\PropertyDes.cs" />
+    <Compile Include="SqlBuilder\ISqlAdapter.cs" />
+    <Compile Include="SqlBuilder\Resolve\EntityResolve.cs" />
+    <Compile Include="SqlBuilder\Resolve\ExpressionResolve.cs" />
+    <Compile Include="SqlBuilder\Resolve\MethodAnalyze.cs" />
+    <Compile Include="SqlBuilder\SqlTypeEnum.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

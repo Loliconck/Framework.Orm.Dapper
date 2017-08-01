@@ -1,25 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
 
-namespace Framework.Orm.Dapper.Core
+namespace Framework.Orm.Dapper
 {
-    public class ConfigurationContainer
-    {
-        internal static ConnectionStringManager ConnectionStringManager;
-
-        static ConfigurationContainer()
-        {
-
-        }
-
-        public static void Init()
-        {
-            ConnectionStringManager = new ConnectionStringManager();
-        }
-    }
-
     internal class ConnectionStringManager
     {
         private static Dictionary<string, string> ConnectionStringsDic = new Dictionary<string, string>();

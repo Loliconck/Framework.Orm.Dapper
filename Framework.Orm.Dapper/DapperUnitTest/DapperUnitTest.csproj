@@ -60,9 +60,9 @@
       <Project>{3e2179df-59cb-4a84-8501-8b29f92e4d89}</Project>
       <Name>Dal</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Framework.Orm.Dapper.Core\Framework.Orm.Dapper.Core.csproj">
+    <ProjectReference Include="..\Framework.Orm.Dapper\Framework.Orm.Dapper.csproj">
       <Project>{9be90f60-f376-49ef-b3d1-efee61829430}</Project>
-      <Name>Framework.Orm.Dapper.Core</Name>
+      <Name>Framework.Orm.Dapper</Name>
     </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{9b0c2ec1-7b68-4a1e-a7e6-1d5814b1fdd8}</Project>
