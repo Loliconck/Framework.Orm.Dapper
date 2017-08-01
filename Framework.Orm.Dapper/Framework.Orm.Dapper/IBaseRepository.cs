@@ -12,5 +12,7 @@ namespace Framework.Orm.Dapper.Core
         T GetSingle(Expression<Func<T, bool>> predicate);
 
         List<T> GetList(string sql, object param);
+
+        int GetCount(Expression<Func<T, bool>> predicate);
     }
 }

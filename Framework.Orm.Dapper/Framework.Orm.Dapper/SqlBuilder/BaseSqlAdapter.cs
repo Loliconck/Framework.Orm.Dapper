@@ -109,6 +109,11 @@ namespace Framework.Orm.Dapper.SqlBuilder
             return this.Build(SqlTypeEnum.Select, predicate, selector, topNum, ordeBy);
         }
 
+        public string GetCount<TEntity>(Expression<Func<TEntity, bool>> predicate = null) where TEntity : BaseEntity
+        {
+            return this.Build(SqlTypeEnum.Count, predicate);
+        }
+
         /// <summary>
         /// 创建SQL语句
         /// </summary>

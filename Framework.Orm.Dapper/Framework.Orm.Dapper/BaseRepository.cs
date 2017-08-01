@@ -67,6 +67,15 @@ namespace Framework.Orm.Dapper.Core
             }
         }
 
+        public int GetCount(Expression<Func<T, bool>> predicate)
+        {
+            using (connection = GetConnection())
+            {
+                var result = connection.Count<T>(predicate);
+                return result;
+            }
+        }
+
         public void Dispose()
         {
             GC.SuppressFinalize(this);

@@ -60,6 +60,36 @@ namespace Framework.Orm.Dapper.Core
             return result;
         }
 
+        /// <summary>
+        /// 查询记录数
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="connection"></param>
+        /// <param name="param"></param>
+        /// <param name="predicate"></param>
+        /// <param name="transaction"></param>
+        /// <param name="commandTimeout"></param>
+        /// <returns></returns>
+        public static int Count<T>(this IDbConnection connection, object param = null,
+            Expression<Func<T, bool>> predicate = null,
+            IDbTransaction transaction = null, int? commandTimeout = null)
+           where T : BaseEntity
+        {
+            ISqlAdapter adapter = GetSqlAdapter(connection);
+
+            var sql = adapter.GetCount(predicate);
+
+            if (param == null)
+            {
+                param = adapter.ParamValues;
+            }
+
+            var result = connection.ExecuteScalar<int>(sql, param, transaction, commandTimeout);
+
+            return result;
+        }
+
+
         private static ISqlAdapter GetSqlAdapter(this IDbConnection connection)
         {
             ISqlAdapter adapter = new SqlServerAdapter();

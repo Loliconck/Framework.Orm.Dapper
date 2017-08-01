@@ -11,6 +11,7 @@ namespace ConsoleApp1
             InitConnectionStrings();
             TestGetList();
             TestGetOne();
+            TestCount();
             Console.ReadKey();
         }
 
@@ -36,6 +37,13 @@ namespace ConsoleApp1
             Console.WriteLine(dal.ConnectionString);
             var one = dal.GetSingle(t => t.Id == Guid.Parse("26D8485B-0850-4D10-8A0A-0C1F43E47280"));
             Console.WriteLine(one == null ? "0" : one.CommodityId.ToString());
+        }
+
+        public static void TestCount()
+        {
+            ComboShoppingCartCommoditysDAL dal = new ComboShoppingCartCommoditysDAL();
+            var one = dal.GetCount(t => t.ComboShoppingCartId == Guid.Parse("A06C6359-EF1E-4A2B-BFEC-D52378A7667F"));
+            Console.WriteLine(one);
         }
 
         private static void InitConnectionStrings()
