@@ -7,7 +7,7 @@ namespace Framework.Orm.Dapper.Core
 {
     public interface IBaseRepository<T> : IRepository where T : BaseEntity
     {
-        string SetConnectionStringKey();
+        string DbKey { set; get; }
 
         T GetSingle(Expression<Func<T, bool>> predicate);
 

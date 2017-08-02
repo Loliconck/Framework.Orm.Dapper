@@ -9,8 +9,8 @@ namespace ConsoleApp1
         static void Main(string[] args)
         {
             InitConnectionStrings();
-            TestGetList();
-            TestGetOne();
+            //TestGetList();
+            //TestGetOne();
             TestCount();
             Console.ReadKey();
         }
@@ -43,6 +43,13 @@ namespace ConsoleApp1
         {
             ComboShoppingCartCommoditysDAL dal = new ComboShoppingCartCommoditysDAL();
             var one = dal.GetCount(t => t.ComboShoppingCartId == Guid.Parse("A06C6359-EF1E-4A2B-BFEC-D52378A7667F"));
+            Console.WriteLine(one);
+        }
+
+        public static void TestDelete()
+        {
+            ComboShoppingCartCommoditysDAL dal = new ComboShoppingCartCommoditysDAL();
+            var one = dal.GetDelete(t => t.ComboShoppingCartId == Guid.Parse("A06C6359-EF1E-4A2B-BFEC-D52378A7667F"));
             Console.WriteLine(one);
         }
 

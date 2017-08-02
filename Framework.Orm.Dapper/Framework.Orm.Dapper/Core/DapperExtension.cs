@@ -45,7 +45,7 @@ namespace Framework.Orm.Dapper.Core
             return result;
         }
 
-        public static T GetSingle<T>(this IDbConnection connection,
+        public static T GetSingle<T>(this IDbConnection connection, object param = null,
             Expression<Func<T, bool>> predicate = null, Expression<Func<T, object>> keySelector = null,
             IDbTransaction transaction = null, int? commandTimeout = null) where T : BaseEntity
         {
@@ -53,7 +53,10 @@ namespace Framework.Orm.Dapper.Core
 
             var sql = adapter.GetSelect(predicate, keySelector);
 
-            var param = adapter.ParamValues;
+            if (param == null)
+            {
+                param = adapter.ParamValues;
+            }
 
             var result = connection.QueryFirstOrDefault<T>(sql, param, transaction, commandTimeout);
 
@@ -89,12 +92,31 @@ namespace Framework.Orm.Dapper.Core
             return result;
         }
 
+        /// <summary>
+        /// 根据指定字段生成where条件获得Delete语句
+        /// </summary>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="predicate">where条件表达式</param>
+        /// <returns></returns>
+        public static bool GetDelete<T>(this IDbConnection connection, object param = null, Expression<Func<T, bool>> predicate = null, IDbTransaction transaction = null, int? commandTimeout = null) where T : BaseEntity
+        {
+            ISqlAdapter adapter = GetSqlAdapter(connection);
+
+            var sql = adapter.GetDelete(predicate);
+
+            if (param == null)
+            {
+                param = adapter.ParamValues;
+            }
+
+            return connection.ExecuteScalar<int>(sql, param, transaction, commandTimeout) > 0;
+        }
+
 
         private static ISqlAdapter GetSqlAdapter(this IDbConnection connection)
         {
             ISqlAdapter adapter = new SqlServerAdapter();
             return adapter;
         }
-
     }
 }

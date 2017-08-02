@@ -12,8 +12,13 @@ namespace Framework.Orm.Dapper.Core
     public class BaseRepository<T> : IDisposable, IBaseRepository<T> where T : BaseEntity
     {
         private IDbConnection connection;
+        private string dbKey = null;
         private string connectionString;
-        private string connectionStringKey;
+
+        public BaseRepository()
+        {
+            dbKey = ConfigurationContainer.ConnectionStringManager.GetDefaultKey();
+        }
 
         private IDbConnection GetConnection()
         {
@@ -22,7 +27,7 @@ namespace Framework.Orm.Dapper.Core
             return connection;
         }
 
-        public virtual string ConnectionString
+        public string ConnectionString
         {
             get
             {
@@ -31,8 +36,7 @@ namespace Framework.Orm.Dapper.Core
                     return connectionString;
                 }
 
-                connectionStringKey = SetConnectionStringKey();
-                connectionString = ConfigurationContainer.ConnectionStringManager[connectionStringKey];
+                connectionString = ConfigurationContainer.ConnectionStringManager[dbKey];
                 if (!string.IsNullOrEmpty(connectionString))
                 {
                     return connectionString;
@@ -45,16 +49,23 @@ namespace Framework.Orm.Dapper.Core
             }
         }
 
-        public virtual string SetConnectionStringKey()
+        public string DbKey
         {
-            return ConfigurationContainer.ConnectionStringManager.GetDefaultKey();
+            get
+            {
+                return dbKey;
+            }
+            set
+            {
+                dbKey = value;
+            }
         }
 
         public T GetSingle(Expression<Func<T, bool>> predicate)
         {
             using (connection = GetConnection())
             {
-                return connection.GetSingle(predicate);
+                return connection.GetSingle(null, predicate);
             }
         }
 
@@ -72,6 +83,15 @@ namespace Framework.Orm.Dapper.Core
             using (connection = GetConnection())
             {
                 var result = connection.Count<T>(predicate);
+                return result;
+            }
+        }
+
+        public bool GetDelete(Expression<Func<T, bool>> predicate)
+        {
+            using (connection = GetConnection())
+            {
+                var result = connection.GetDelete<T>(predicate);
                 return result;
             }
         }

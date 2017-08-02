@@ -115,6 +115,17 @@ namespace Framework.Orm.Dapper.SqlBuilder
         }
 
         /// <summary>
+        /// 根据指定字段生成where条件获得Delete语句
+        /// </summary>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="predicate">where条件表达式</param>
+        /// <returns></returns>
+        public string GetDelete<T>(Expression<Func<T, bool>> predicate = null) where T : BaseEntity
+        {
+            return this.Build(SqlTypeEnum.Delete, predicate);
+        }
+
+        /// <summary>
         /// 创建SQL语句
         /// </summary>
         public string Build<T>(SqlTypeEnum type, Expression<Func<T, bool>> predicate = null, Expression<Func<T, object>> keySelector = null, int topNumber = 0,

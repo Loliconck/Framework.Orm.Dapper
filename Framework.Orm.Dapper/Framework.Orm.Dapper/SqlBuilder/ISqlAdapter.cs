@@ -35,5 +35,13 @@ namespace Framework.Orm.Dapper.SqlBuilder
         /// <param name="predicate">where条件表达式</param>
         /// <returns></returns>
         string GetCount<T>(Expression<Func<T, bool>> predicate = null) where T : BaseEntity;
+
+        /// <summary>
+        /// 根据指定字段生成where条件获得Delete语句
+        /// </summary>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="predicate">where条件表达式</param>
+        /// <returns></returns>
+        string GetDelete<T>(Expression<Func<T, bool>> predicate = null) where T : BaseEntity;
     }
 }
