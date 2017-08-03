@@ -1,4 +1,6 @@
 ﻿using Framework.Orm.Dapper.Domain;
+using Framework.Orm.Dapper.Domain.Attributes;
+using Framework.Orm.Dapper.Domain.Enum;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,5 +21,11 @@ namespace Model
 
         [Description("商品类型")]
         public int CategoryType { get; set; }
+
+        /// <summary>
+        /// 是否无效
+        /// </summary>
+        [Base(ColumnTypeEnum.Delete)]
+        public virtual int Disabled { get; set; }
     }
 }

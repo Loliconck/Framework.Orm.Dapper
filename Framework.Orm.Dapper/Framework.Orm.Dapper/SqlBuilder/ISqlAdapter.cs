@@ -29,6 +29,18 @@ namespace Framework.Orm.Dapper.SqlBuilder
         string GetSelect<T>(Expression<Func<T, bool>> predicate = null, Expression<Func<T, object>> selector = null, int topNum = 0, IDictionary<string, OrderByTypeEnum> ordeBy = null) where T : BaseEntity;
 
         /// <summary>
+        /// 创建分页Sql语句
+        /// </summary>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="page">分页参数</param>
+        /// <param name="predicate">where条件表达式</param>
+        /// <param name="selector">查询字段表达式</param>
+        /// <param name="orderByTypes">请于排序对应数量的排序类型，未对应的将默认降序</param>
+        /// <returns></returns>
+        string GetPage<T>(PageParam page, Expression<Func<T, bool>> predicate = null,
+            Expression<Func<T, object>> selector = null, IDictionary<string, OrderByTypeEnum> orderByTypes = null) where T : BaseEntity;
+
+        /// <summary>
         /// 获取 Count 查询语句
         /// </summary>
         /// <typeparam name="TEntity">实体类型</typeparam>
@@ -43,5 +55,12 @@ namespace Framework.Orm.Dapper.SqlBuilder
         /// <param name="predicate">where条件表达式</param>
         /// <returns></returns>
         string GetDelete<T>(Expression<Func<T, bool>> predicate = null) where T : BaseEntity;
+
+        /// <summary>
+        /// 获得Insert语句，包含整个实体字段
+        /// </summary>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <returns></returns>
+        string GetInsert<T>() where T : BaseEntity;
     }
 }

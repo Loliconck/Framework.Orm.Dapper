@@ -1,6 +1,8 @@
 ﻿using Dal;
 using Framework.Orm.Dapper.Core;
+using Framework.Orm.Dapper.Domain;
 using System;
+using System.Linq;
 
 namespace ConsoleApp1
 {
@@ -11,7 +13,10 @@ namespace ConsoleApp1
             InitConnectionStrings();
             //TestGetList();
             //TestGetOne();
-            TestCount();
+            //TestCount();
+            //TestGetList2();
+            //TestPaging();
+            TestDelete();
             Console.ReadKey();
         }
 
@@ -24,7 +29,28 @@ namespace ConsoleApp1
 
             Console.WriteLine(dal.ConnectionString);
             var list = dal.GetList(sql, null);
-            Console.WriteLine(list == null ? 0 : list.Count);
+            Console.WriteLine(list == null ? 0 : list.Count());
+        }
+
+        public static void TestGetList2()
+        {
+            ComboShoppingCartCommoditysDAL dal = new ComboShoppingCartCommoditysDAL();
+            var list = dal.GetList(t => t.ComboSetCategoryId == Guid.Parse("7DE97E1B-161E-43A2-9AD7-F23EC67EEEA7"), t => new { t.Id, t.ComboSetCategoryId, t.ComboShoppingCartId });
+            Console.WriteLine(list != null ? list.Count() : 0);
+        }
+
+        public static void TestPaging()
+        {
+            ComboShoppingCartCommoditysDAL dal = new ComboShoppingCartCommoditysDAL();
+            PageParam param = new PageParam()
+            {
+                IsDesc = true,
+                PageIndex = 1,
+                PageSize = 20
+            };
+            var data = dal.GetPaging(param, t => t.ComboSetCategoryId == Guid.Parse("7DE97E1B-161E-43A2-9AD7-F23EC67EEEA7"), t => new { t.Id, t.ComboSetCategoryId, t.ComboShoppingCartId });
+            Console.WriteLine(data.Count);
+            Console.WriteLine(data.Data.Count());
         }
 
         public static void TestGetOne()
@@ -49,7 +75,7 @@ namespace ConsoleApp1
         public static void TestDelete()
         {
             ComboShoppingCartCommoditysDAL dal = new ComboShoppingCartCommoditysDAL();
-            var one = dal.GetDelete(t => t.ComboShoppingCartId == Guid.Parse("A06C6359-EF1E-4A2B-BFEC-D52378A7667F"));
+            var one = dal.GetDelete(t => t.Id == Guid.Parse("26D8485B-0850-4D10-8A0A-0C1F43E47280"));
             Console.WriteLine(one);
         }
 

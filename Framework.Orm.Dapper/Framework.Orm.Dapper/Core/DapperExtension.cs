@@ -27,7 +27,7 @@ namespace Framework.Orm.Dapper.Core
         /// <returns></returns>
         public static IEnumerable<T> Select<T>(this IDbConnection connection, object param,
             Expression<Func<T, bool>> predicate = null, Expression<Func<T, object>> keySelector = null, int topNumber = 0,
-            Dictionary<string, OrderByTypeEnum> orderByTypes = null,
+            IDictionary<string, OrderByTypeEnum> orderByTypes = null,
             IDbTransaction transaction = null, int? commandTimeout = null)
            where T : BaseEntity
         {
@@ -61,6 +61,36 @@ namespace Framework.Orm.Dapper.Core
             var result = connection.QueryFirstOrDefault<T>(sql, param, transaction, commandTimeout);
 
             return result;
+        }
+
+        /// <summary>
+        /// 分页查询
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="connection"></param>
+        /// <param name="param"></param>
+        /// <param name="page"></param>
+        /// <param name="orderByTypes"></param>
+        /// <param name="predicate"></param>
+        /// <param name="selector"></param>
+        /// <param name="transaction"></param>
+        /// <param name="commandTimeout"></param>
+        /// <returns></returns>
+        public static IEnumerable<T> SelectPage<T>(this IDbConnection connection, object param, PageParam page,
+            Expression<Func<T, bool>> predicate = null, Expression<Func<T, object>> selector = null, IDictionary<string, OrderByTypeEnum> orderByTypes = null,
+            IDbTransaction transaction = null, int? commandTimeout = null)
+           where T : BaseEntity
+        {
+            ISqlAdapter adapter = GetSqlAdapter(connection);
+
+            var sql = adapter.GetPage(page, predicate, selector, orderByTypes);
+
+            if (param == null)
+            {
+                param = adapter.ParamValues;
+            }
+
+            return connection.Query<T>(sql, param, transaction, true, commandTimeout);
         }
 
         /// <summary>
@@ -112,6 +142,24 @@ namespace Framework.Orm.Dapper.Core
             return connection.ExecuteScalar<int>(sql, param, transaction, commandTimeout) > 0;
         }
 
+        /// <summary>
+        /// 新增
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="connection"></param>
+        /// <param name="param"></param>
+        /// <param name="transaction"></param>
+        /// <param name="commandTimeout"></param>
+        /// <returns></returns>
+        public static int Insert<T>(this IDbConnection connection, IEnumerable<T> param, IDbTransaction transaction = null, int? commandTimeout = null)
+            where T : BaseEntity
+        {
+            ISqlAdapter adapter = GetSqlAdapter(connection);
+
+            var sql = adapter.GetInsert<T>();
+
+            return connection.Execute(sql, param, transaction, commandTimeout);
+        }
 
         private static ISqlAdapter GetSqlAdapter(this IDbConnection connection)
         {

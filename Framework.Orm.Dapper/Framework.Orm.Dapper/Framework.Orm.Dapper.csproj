@@ -57,6 +57,7 @@
     <Compile Include="Domain\Enum\ColumnTypeEnum.cs" />
     <Compile Include="Domain\Enum\OrderByTypeEnum.cs" />
     <Compile Include="Domain\PageParam.cs" />
+    <Compile Include="Domain\PagingEntity.cs" />
     <Compile Include="EntityInfoManager.cs" />
     <Compile Include="IBaseRepository.cs" />
     <Compile Include="IRepository.cs" />

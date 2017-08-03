@@ -109,6 +109,11 @@ namespace Framework.Orm.Dapper.SqlBuilder
             return this.Build(SqlTypeEnum.Select, predicate, selector, topNum, ordeBy);
         }
 
+        public string GetPage<T>(PageParam page, Expression<Func<T, bool>> predicate = null, Expression<Func<T, object>> selector = null, IDictionary<string, OrderByTypeEnum> orderByTypes = null) where T : BaseEntity
+        {
+            return this.Build(SqlTypeEnum.Page, predicate, selector, orderByTypes: orderByTypes, page: page);
+        }
+
         public string GetCount<TEntity>(Expression<Func<TEntity, bool>> predicate = null) where TEntity : BaseEntity
         {
             return this.Build(SqlTypeEnum.Count, predicate);
@@ -123,6 +128,11 @@ namespace Framework.Orm.Dapper.SqlBuilder
         public string GetDelete<T>(Expression<Func<T, bool>> predicate = null) where T : BaseEntity
         {
             return this.Build(SqlTypeEnum.Delete, predicate);
+        }
+
+        public string GetInsert<T>() where T : BaseEntity
+        {
+            return this.Build<T>(SqlTypeEnum.Insert);
         }
 
         /// <summary>
