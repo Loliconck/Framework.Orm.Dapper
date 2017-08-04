@@ -6,6 +6,13 @@ namespace Framework.Orm.Dapper.Core
     {
         internal static ConnectionStringManager ConnectionStringManager;
         internal static EntityInfoManager EntityInfoManager;
+        public static int SingleMaxInsertCount
+        {
+            get
+            {
+                return 1000;
+            }
+        }
 
         static ConfigurationContainer()
         {

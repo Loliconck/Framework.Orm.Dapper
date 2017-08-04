@@ -149,11 +149,11 @@ namespace Framework.Orm.Dapper.Core
                 }
                 entity.SetInsertProperty();
             }
-            //if (entitys.Length > Configuration.SingleMaxInsertCount)
-            //{
-            //    BulkInsert(entitys);
-            //    return entitys.Length;
-            //}
+            if (entitys.Length > ConfigurationContainer.SingleMaxInsertCount)
+            {
+                BulkInsert(entitys);
+                return entitys.Length;
+            }
 
             //if (!base.IsTransaction)
             //{
@@ -168,6 +168,107 @@ namespace Framework.Orm.Dapper.Core
             //    var result = connection.Insert(entitys, transaction);
             //    return result;
             //}
+        }
+
+        /// <summary>
+        /// 使用SqlBulkCopy批量插入数据
+        /// </summary>
+        public void BulkInsert(IEnumerable<T> entities)
+        {
+            var enumerable = entities as T[] ?? entities.ToArray();
+
+            if (entities == null || !enumerable.Any())
+            {
+                return;
+            }
+
+            var request = ToDataTable(enumerable);
+
+            using (var conn = new SqlConnection(this.ConnectionString))
+            {
+                conn.Open();
+
+                //事务锁
+                SqlTransaction bulkTrans = conn.BeginTransaction();
+                using (SqlBulkCopy bulkCopy = new SqlBulkCopy(conn, SqlBulkCopyOptions.CheckConstraints, bulkTrans)
+                {
+                    BatchSize = 10000,
+                    DestinationTableName = request.Item1
+                })
+                {
+                    var dt = request.Item2;
+
+                    if (dt == null)
+                    {
+                        return;
+                    }
+                    try
+                    {
+                        foreach (DataColumn dc in dt.Columns)
+                        {
+                            bulkCopy.ColumnMappings.Add(dc.ColumnName, dc.ColumnName);
+                        }
+
+                        bulkCopy.WriteToServer(dt);
+                        bulkTrans.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        bulkTrans.Rollback();
+
+                        throw ex;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 将泛类型集合List类转换成DataTable 并返回表名
+        /// </summary>
+        /// <param name="entitys">泛类型集合</param>
+        /// <returns></returns>
+        private static Tuple<string, DataTable> ToDataTable<T>(IEnumerable<T> entitys)
+        {
+            var entityInfos = ConfigurationContainer.EntityInfoManager.EntityInfos;
+
+            //检查实体集合不能为空
+            var enumerable = entitys as T[] ?? entitys.ToArray();
+
+            if (entitys == null || !enumerable.Any())
+            {
+                throw new Exception("需转换的集合为空");
+            }
+            var entityType = typeof(T);
+
+            if (!entityInfos.ContainsKey(entityType.FullName))
+            {
+                throw new Exception(string.Format("未找到{0}对应的表名", entityType.FullName));
+            }
+
+            var entity2Table = entityInfos[entityType.FullName];
+
+            DataTable dt = new DataTable();
+
+            var propertyDeses = entity2Table.Properties;
+
+            foreach (var p in propertyDeses)
+            {
+                dt.Columns.Add(p.Column, p.PropertyType);
+            }
+
+            foreach (var entity in enumerable)
+            {
+                object[] entityValues = new object[propertyDeses.Count];
+
+                for (int i = 0; i < entityValues.Length; i++)
+                {
+                    entityValues[i] = propertyDeses[i].PropertyInfo.GetValue(entity, null);
+                }
+
+                dt.Rows.Add(entityValues);
+            }
+
+            return new Tuple<string, DataTable>(entity2Table.TableName, dt);
         }
 
         #endregion
