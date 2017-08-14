@@ -72,6 +72,7 @@
     <Compile Include="SqlBuilder\Resolve\ExpressionResolve.cs" />
     <Compile Include="SqlBuilder\Resolve\MethodAnalyze.cs" />
     <Compile Include="SqlBuilder\SqlTypeEnum.cs" />
+    <Compile Include="UnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

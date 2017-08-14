@@ -10,9 +10,13 @@ using System.Linq.Expressions;
 
 namespace Framework.Orm.Dapper.Core
 {
-    public class BaseRepository<T> : IDisposable, IBaseRepository<T> where T : BaseEntity
+    public abstract class BaseRepository : UnitOfWork, IRepository
     {
-        private IDbConnection connection;
+
+    }
+
+    public class BaseRepository<T> : BaseRepository, IBaseRepository<T> where T : BaseEntity
+    {
         private string dbKey = null;
         private string connectionString;
 
@@ -28,7 +32,7 @@ namespace Framework.Orm.Dapper.Core
             return connection;
         }
 
-        public string ConnectionString
+        public override string ConnectionString
         {
             get
             {
@@ -155,19 +159,19 @@ namespace Framework.Orm.Dapper.Core
                 return entitys.Length;
             }
 
-            //if (!base.IsTransaction)
-            //{
-            using (connection = new SqlConnection(ConnectionString))
+            if (!base.IsTransaction)
             {
-                var result = connection.Insert(entitys);
+                using (connection = new SqlConnection(ConnectionString))
+                {
+                    var result = connection.Insert(entitys);
+                    return result;
+                }
+            }
+            else
+            {
+                var result = connection.Insert(entitys, transaction);
                 return result;
             }
-            //}
-            //else
-            //{
-            //    var result = connection.Insert(entitys, transaction);
-            //    return result;
-            //}
         }
 
         /// <summary>
@@ -272,10 +276,5 @@ namespace Framework.Orm.Dapper.Core
         }
 
         #endregion
-
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-        }
     }
 }

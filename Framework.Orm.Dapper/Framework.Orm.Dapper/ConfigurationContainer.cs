@@ -2,6 +2,9 @@
 
 namespace Framework.Orm.Dapper.Core
 {
+    /// <summary>
+    /// 相关配置管理容器
+    /// </summary>
     public class ConfigurationContainer
     {
         internal static ConnectionStringManager ConnectionStringManager;
@@ -16,12 +19,15 @@ namespace Framework.Orm.Dapper.Core
 
         static ConfigurationContainer()
         {
-            ConnectionStringManager = new ConnectionStringManager();
             EntityInfoManager = new EntityInfoManager();
         }
 
+        /// <summary>
+        /// Dapper初始化
+        /// </summary>
         public static void Init()
         {
+            ConnectionStringManager = new ConnectionStringManager();
             EntityInfoManager.Initialize(Assembly.GetExecutingAssembly());
         }
     }
