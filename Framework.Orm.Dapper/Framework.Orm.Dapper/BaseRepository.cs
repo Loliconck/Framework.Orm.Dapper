@@ -16,7 +16,7 @@ namespace Framework.Orm.Dapper.Core
 
     }
 
-    public class BaseRepository<T> : BaseRepository, IBaseRepository<T> where T : BaseEntity
+    public class BaseRepository<TEntity> : BaseRepository, IBaseRepository<TEntity> where TEntity : BaseEntity
     {
         private string dbKey = null;
         private string connectionString;
@@ -69,7 +69,7 @@ namespace Framework.Orm.Dapper.Core
 
         #region Query
 
-        public T GetSingle(Expression<Func<T, bool>> predicate)
+        public TEntity GetSingle(Expression<Func<TEntity, bool>> predicate)
         {
             using (connection = GetConnection())
             {
@@ -77,20 +77,20 @@ namespace Framework.Orm.Dapper.Core
             }
         }
 
-        public IEnumerable<T> GetList(string sql, object param)
+        public IEnumerable<TEntity> GetList(string sql, object param)
         {
             using (connection = GetConnection())
             {
-                return connection.Query<T>(sql, param);
+                return connection.Query<TEntity>(sql, param);
             }
         }
 
-        public IEnumerable<T> GetList(Expression<Func<T, bool>> predicate = null, Expression<Func<T, object>> selector = null, int topNumber = 0,
+        public IEnumerable<TEntity> GetList(Expression<Func<TEntity, bool>> predicate = null, Expression<Func<TEntity, object>> selector = null, int topNumber = 0,
             IDictionary<string, OrderByTypeEnum> orderByTypes = null)
         {
             using (connection = GetConnection())
             {
-                return connection.Select<T>(null, predicate, selector, topNumber, orderByTypes);
+                return connection.Select<TEntity>(null, predicate, selector, topNumber, orderByTypes);
             }
         }
 
@@ -102,14 +102,14 @@ namespace Framework.Orm.Dapper.Core
         /// <param name="predicate">查询条件</param>
         /// <param name="selector">查询字段</param>
         /// <returns></returns>
-        public PagingEntity<T> GetPaging(PageParam page, Expression<Func<T, bool>> predicate = null,
-             Expression<Func<T, object>> selector = null, IDictionary<string, OrderByTypeEnum> orderByTypes = null)
+        public PagingEntity<TEntity> GetPaging(PageParam page, Expression<Func<TEntity, bool>> predicate = null,
+             Expression<Func<TEntity, object>> selector = null, IDictionary<string, OrderByTypeEnum> orderByTypes = null)
         {
             using (connection = GetConnection())
             {
                 var data = connection.SelectPage(null, page, predicate, selector, orderByTypes);
                 var result = connection.Count(null, predicate);
-                return new PagingEntity<T>()
+                return new PagingEntity<TEntity>()
                 {
                     Data = data.ToList(),
                     Count = result
@@ -117,20 +117,20 @@ namespace Framework.Orm.Dapper.Core
             }
         }
 
-        public int GetCount(Expression<Func<T, bool>> predicate)
+        public int GetCount(Expression<Func<TEntity, bool>> predicate)
         {
             using (connection = GetConnection())
             {
-                var result = connection.Count<T>(null, predicate);
+                var result = connection.Count<TEntity>(null, predicate);
                 return result;
             }
         }
 
-        public bool GetDelete(Expression<Func<T, bool>> predicate)
+        public bool GetDelete(Expression<Func<TEntity, bool>> predicate)
         {
             using (connection = GetConnection())
             {
-                var result = connection.GetDelete<T>(predicate);
+                var result = connection.GetDelete<TEntity>(predicate);
                 return result;
             }
         }
@@ -144,7 +144,7 @@ namespace Framework.Orm.Dapper.Core
         /// </summary>
         /// <param name="entitys"></param>
         /// <returns></returns>
-        public int Insert(params T[] entitys)
+        public int Insert(params TEntity[] entitys)
         {
             foreach (var entity in entitys)
             {
@@ -182,7 +182,7 @@ namespace Framework.Orm.Dapper.Core
         /// <param name="selector"></param>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public int Update(T entity, Expression<Func<T, object>> selector = null, Expression<Func<T, bool>> predicate = null)
+        public int Update(TEntity entity, Expression<Func<TEntity, object>> selector = null, Expression<Func<TEntity, bool>> predicate = null)
         {
             if (!entity.HasValue())
             {
@@ -193,13 +193,13 @@ namespace Framework.Orm.Dapper.Core
             {
                 using (connection = new SqlConnection(ConnectionString))
                 {
-                    var result = connection.Update(new List<T> { entity }, selector, predicate);
+                    var result = connection.Update(new List<TEntity> { entity }, selector, predicate);
                     return result;
                 }
             }
             else
             {
-                var result = connection.Update(new List<T> { entity }, selector, predicate, transaction);
+                var result = connection.Update(new List<TEntity> { entity }, selector, predicate, transaction);
                 return result;
             }
         }
@@ -211,9 +211,9 @@ namespace Framework.Orm.Dapper.Core
         /// <param name="selector"></param>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public int Update(IEnumerable<T> entities, Expression<Func<T, object>> selector = null, Expression<Func<T, bool>> predicate = null)
+        public int Update(IEnumerable<TEntity> entities, Expression<Func<TEntity, object>> selector = null, Expression<Func<TEntity, bool>> predicate = null)
         {
-            var enumerable = entities as T[] ?? entities.ToArray();
+            var enumerable = entities as TEntity[] ?? entities.ToArray();
 
             foreach (var entity in enumerable)
             {
@@ -243,19 +243,19 @@ namespace Framework.Orm.Dapper.Core
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public int Delete(Expression<Func<T, bool>> predicate)
+        public int Delete(Expression<Func<TEntity, bool>> predicate)
         {
             if (!base.IsTransaction)
             {
                 using (connection = new SqlConnection(ConnectionString))
                 {
-                    var result = connection.Delete<T>(null, predicate);
+                    var result = connection.Delete<TEntity>(null, predicate);
                     return result;
                 }
             }
             else
             {
-                var result = connection.Delete<T>(null, predicate, transaction);
+                var result = connection.Delete<TEntity>(null, predicate, transaction);
                 return result;
             }
         }
@@ -263,9 +263,9 @@ namespace Framework.Orm.Dapper.Core
         /// <summary>
         /// 使用SqlBulkCopy批量插入数据
         /// </summary>
-        public void BulkInsert(IEnumerable<T> entities)
+        public void BulkInsert(IEnumerable<TEntity> entities)
         {
-            var enumerable = entities as T[] ?? entities.ToArray();
+            var enumerable = entities as TEntity[] ?? entities.ToArray();
 
             if (entities == null || !enumerable.Any())
             {
@@ -359,6 +359,51 @@ namespace Framework.Orm.Dapper.Core
             }
 
             return new Tuple<string, DataTable>(entity2Table.TableName, dt);
+        }
+
+        #endregion
+
+        #region Extentions
+
+        public int Execute(string sql, object param)
+        {
+            if (!base.IsTransaction)
+            {
+                using (connection = new SqlConnection(ConnectionString))
+                {
+                    return connection.Execute(sql, param);
+                }
+            }
+            else
+            {
+                return connection.Execute(sql, param, transaction);
+            }
+        }
+
+        public T ExecuteScalar<T>(string sql, object param)
+        {
+            using (connection = GetConnection())
+            {
+                return connection.ExecuteScalar<T>(sql, param);
+            }
+        }
+
+        public IEnumerable<TEntity> Query(string sql, object param)
+        {
+            using (connection = GetConnection())
+            {
+                var result = connection.Query<TEntity>(sql, param);
+                return result;
+            }
+        }
+
+        public IEnumerable<T> Query<T>(string sql, object param)
+        {
+            using (connection = GetConnection())
+            {
+                var result = connection.Query<T>(sql, param);
+                return result;
+            }
         }
 
         #endregion
