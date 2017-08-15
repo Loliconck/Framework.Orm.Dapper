@@ -62,5 +62,15 @@ namespace Framework.Orm.Dapper.SqlBuilder
         /// <typeparam name="T">实体类型</typeparam>
         /// <returns></returns>
         string GetInsert<T>() where T : BaseEntity;
+
+        /// <summary>
+        /// 获得指定字段生成获得Update语句
+        /// 根据指定的where条件进行修改(默认根据主键ID进行修改)
+        /// </summary>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="predicate">where条件表达式</param>
+        /// <param name="selector">查询字段表达式</param>
+        /// <returns></returns>
+        string GetUpdate<T>(Expression<Func<T, bool>> predicate = null, Expression<Func<T, object>> selector = null) where T : BaseEntity;
     }
 }

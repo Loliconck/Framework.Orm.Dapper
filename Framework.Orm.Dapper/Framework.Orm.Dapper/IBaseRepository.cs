@@ -38,6 +38,11 @@ namespace Framework.Orm.Dapper.Core
         PagingEntity<T> GetPaging(PageParam page, Expression<Func<T, bool>> predicate = null,
             Expression<Func<T, object>> selector = null, IDictionary<string, OrderByTypeEnum> orderByTypes = null);
 
+        /// <summary>
+        /// 查询满足条件的记录的条数
+        /// </summary>
+        /// <param name="predicate">条件表达式</param>
+        /// <returns></returns>
         int GetCount(Expression<Func<T, bool>> predicate);
 
         #endregion
@@ -50,6 +55,31 @@ namespace Framework.Orm.Dapper.Core
         /// <param name="entitys"></param>
         /// <returns></returns>
         int Insert(params T[] entitys);
+
+        /// <summary>
+        /// 修改（默认根据主键修改）
+        /// </summary>
+        /// <param name="entity">要修改的实体</param>
+        /// <param name="selector">指定修改字段（默认为全部字段）</param>
+        /// <param name="predicate">修改条件（值必须包含在TEntity里面）</param>
+        /// <returns></returns>
+        int Update(T entity, Expression<Func<T, object>> selector = null, Expression<Func<T, bool>> predicate = null);
+
+        /// <summary>
+        /// 批量修改（默认根据主键修改）
+        /// </summary>
+        /// <param name="entitys">需要修改的实体对象集合</param>
+        /// <param name="selector">指定修改字段（默认为全部字段）</param>
+        /// <param name="predicate">修改条件（值必须包含在TEntity里面）</param>
+        /// <returns></returns>
+        int Update(IEnumerable<T> entitys, Expression<Func<T, object>> selector = null, Expression<Func<T, bool>> predicate = null);
+
+        /// <summary>
+        ///  删除（根据指定条件逻辑删除）
+        /// </summary>
+        /// <param name="predicate">删除条件</param>
+        /// <returns></returns>
+        int Delete(Expression<Func<T, bool>> predicate);
 
         #endregion
     }

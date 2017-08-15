@@ -161,6 +161,56 @@ namespace Framework.Orm.Dapper.Core
             return connection.Execute(sql, param, transaction, commandTimeout);
         }
 
+        /// <summary>
+        /// 修改
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="connection"></param>
+        /// <param name="param"></param>
+        /// <param name="selector"></param>
+        /// <param name="transaction"></param>
+        /// <param name="commandTimeout"></param>
+        /// <returns></returns>
+        public static int Update<T>(this IDbConnection connection, IEnumerable<T> param, Expression<Func<T, object>> selector = null,
+            Expression<Func<T, bool>> predicate = null,
+            IDbTransaction transaction = null, int? commandTimeout = null)
+           where T : BaseEntity
+        {
+            ISqlAdapter adapter = GetSqlAdapter(connection);
+
+            var sql = adapter.GetUpdate(predicate, selector);
+
+            var result = connection.Execute(sql, param, transaction, commandTimeout);
+
+            return result;
+        }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="connection"></param>
+        /// <param name="param"></param>
+        /// <param name="predicate"></param>
+        /// <param name="transaction"></param>
+        /// <param name="commandTimeout"></param>
+        /// <returns></returns>
+        public static int Delete<T>(this IDbConnection connection, IEnumerable<T> param,
+            Expression<Func<T, bool>> predicate = null,
+            IDbTransaction transaction = null, int? commandTimeout = null)
+           where T : BaseEntity
+        {
+            ISqlAdapter adapter = GetSqlAdapter(connection);
+
+            var sql = adapter.GetDelete(predicate);
+
+            var result = 0;
+
+            result = connection.Execute(sql, param, transaction, commandTimeout);
+
+            return result;
+        }
+
         private static ISqlAdapter GetSqlAdapter(this IDbConnection connection)
         {
             ISqlAdapter adapter = new SqlServerAdapter();

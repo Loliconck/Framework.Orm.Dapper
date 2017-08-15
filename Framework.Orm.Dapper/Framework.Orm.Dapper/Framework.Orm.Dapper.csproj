@@ -56,6 +56,7 @@
     <Compile Include="ConfigurationContainer.cs" />
     <Compile Include="Domain\Enum\ColumnTypeEnum.cs" />
     <Compile Include="Domain\Enum\OrderByTypeEnum.cs" />
+    <Compile Include="Domain\Extension\EntityExtensions.cs" />
     <Compile Include="Domain\PageParam.cs" />
     <Compile Include="Domain\PagingEntity.cs" />
     <Compile Include="EntityInfoManager.cs" />

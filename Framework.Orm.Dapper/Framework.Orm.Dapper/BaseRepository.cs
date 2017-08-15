@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Framework.Orm.Dapper.Domain;
 using Framework.Orm.Dapper.Domain.Enum;
+using Framework.Orm.Dapper.Domain.Extension;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -170,6 +171,91 @@ namespace Framework.Orm.Dapper.Core
             else
             {
                 var result = connection.Insert(entitys, transaction);
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// 更新单个实体
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="selector"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public int Update(T entity, Expression<Func<T, object>> selector = null, Expression<Func<T, bool>> predicate = null)
+        {
+            if (!entity.HasValue())
+            {
+                throw new ArgumentNullException("entity不能为空或者Id不能为空");
+            }
+
+            if (!base.IsTransaction)
+            {
+                using (connection = new SqlConnection(ConnectionString))
+                {
+                    var result = connection.Update(new List<T> { entity }, selector, predicate);
+                    return result;
+                }
+            }
+            else
+            {
+                var result = connection.Update(new List<T> { entity }, selector, predicate, transaction);
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// 批量更新实体集合
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <param name="selector"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public int Update(IEnumerable<T> entities, Expression<Func<T, object>> selector = null, Expression<Func<T, bool>> predicate = null)
+        {
+            var enumerable = entities as T[] ?? entities.ToArray();
+
+            foreach (var entity in enumerable)
+            {
+                if (!entity.HasValue())
+                {
+                    throw new ArgumentNullException("entity不能为空或者Id不能为空");
+                }
+            }
+
+            if (!base.IsTransaction)
+            {
+                using (connection = new SqlConnection(ConnectionString))
+                {
+                    var result = connection.Update(enumerable, selector, predicate);
+                    return result;
+                }
+            }
+            else
+            {
+                var result = connection.Update(enumerable, selector, predicate, transaction);
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// 根据条件删除数据库
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public int Delete(Expression<Func<T, bool>> predicate)
+        {
+            if (!base.IsTransaction)
+            {
+                using (connection = new SqlConnection(ConnectionString))
+                {
+                    var result = connection.Delete<T>(null, predicate);
+                    return result;
+                }
+            }
+            else
+            {
+                var result = connection.Delete<T>(null, predicate, transaction);
                 return result;
             }
         }
