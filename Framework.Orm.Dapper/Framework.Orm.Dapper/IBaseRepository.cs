@@ -81,6 +81,34 @@ namespace Framework.Orm.Dapper.Core
         /// <returns></returns>
         int Delete(Expression<Func<TEntity, bool>> predicate);
 
+        /// <summary>
+        /// 删除（根据主键逻辑删除）
+        /// </summary>
+        /// <param name="entitys">实体对象</param>
+        /// <returns></returns>
+        int Delete(params TEntity[] entitys);
+
+        /// <summary>
+        ///  删除（根据指定条件逻辑删除）
+        /// </summary>
+        /// <param name="predicate">删除条件</param>
+        /// <returns></returns>
+        int Delete(TEntity entitie, Expression<Func<TEntity, bool>> predicate);
+
+        /// <summary>
+        ///  删除（根据指定条件逻辑删除）
+        /// </summary>
+        /// <param name="predicate">删除条件</param>
+        /// <returns></returns>
+        int Delete(IEnumerable<TEntity> entities, Expression<Func<TEntity, bool>> predicate);
+
+        /// <summary>
+        ///  根据主键删除
+        /// </summary>
+        /// <param name="id">主键值</param>
+        /// <returns></returns>
+        int Delete(Guid id);
+
         #endregion
 
         #region Extentions

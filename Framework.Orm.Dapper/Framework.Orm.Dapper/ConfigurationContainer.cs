@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using Framework.Orm.Dapper.Domain;
+using System;
+using System.Reflection;
 
 namespace Framework.Orm.Dapper.Core
 {
@@ -8,18 +10,10 @@ namespace Framework.Orm.Dapper.Core
     public class ConfigurationContainer
     {
         internal static ConnectionStringManager ConnectionStringManager;
-        internal static EntityInfoManager EntityInfoManager;
-        public static int SingleMaxInsertCount
-        {
-            get
-            {
-                return 1000;
-            }
-        }
 
         static ConfigurationContainer()
         {
-            EntityInfoManager = new EntityInfoManager();
+
         }
 
         /// <summary>
@@ -30,5 +24,26 @@ namespace Framework.Orm.Dapper.Core
             ConnectionStringManager = new ConnectionStringManager();
             EntityInfoManager.Initialize(Assembly.GetExecutingAssembly());
         }
+
+        /// <summary>
+        /// 单次插入最大数量（超过500后启用批量插入)
+        /// </summary>
+        public static int SingleMaxInsertCount
+        {
+            get
+            {
+                return 1000;
+            }
+        }
+
+        /// <summary>
+        /// sqllog执行委托
+        /// </summary>
+        public static Action<string, object, long> DbLog = null;
+
+        /// <summary>
+        /// 业务日志委托
+        /// </summary>
+        public static Action<BusinessLog> BusinessLog = null;
     }
 }

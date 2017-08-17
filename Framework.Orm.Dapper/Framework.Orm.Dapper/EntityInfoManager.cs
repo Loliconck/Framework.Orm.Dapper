@@ -12,14 +12,14 @@ namespace Framework.Orm.Dapper
         /// <summary>
         /// 用于缓存对象转换实体
         /// </summary>
-        public readonly ConcurrentDictionary<string, EntityInfo> EntityInfos = new ConcurrentDictionary<string, EntityInfo>();
-        public readonly ConcurrentDictionary<string, EntityInfo> TableInfos = new ConcurrentDictionary<string, EntityInfo>();
+        public static readonly ConcurrentDictionary<string, EntityInfo> EntityInfos = new ConcurrentDictionary<string, EntityInfo>();
+        public static readonly ConcurrentDictionary<string, EntityInfo> TableInfos = new ConcurrentDictionary<string, EntityInfo>();
 
         /// <summary>
         /// 初始化
         /// </summary>
         /// <param name="assembly">Domain程序集用于初始化加载所有的实体映射信息</param>
-        public void Initialize(Assembly assembly)
+        public static void Initialize(Assembly assembly)
         {
             var types = assembly
                 .GetTypes()
@@ -41,7 +41,7 @@ namespace Framework.Orm.Dapper
         /// </summary>
         /// <param name="key"></param>
         /// <param name="des"></param>
-        private void AddEntityInfo(string key, EntityInfo des)
+        private static void AddEntityInfo(string key, EntityInfo des)
         {
             if (!EntityInfos.ContainsKey(key) && des != null)
             {
@@ -49,7 +49,7 @@ namespace Framework.Orm.Dapper
             }
         }
 
-        private void AddTableInfo(string key, EntityInfo des)
+        private static void AddTableInfo(string key, EntityInfo des)
         {
             if (!TableInfos.ContainsKey(key) && des != null)
             {

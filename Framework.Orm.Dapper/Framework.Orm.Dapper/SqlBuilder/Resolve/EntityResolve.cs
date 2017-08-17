@@ -28,7 +28,7 @@ namespace Framework.Orm.Dapper.SqlBuilder.Resolve
         {
             EntityInfo model;
 
-            if (ConfigurationContainer.EntityInfoManager.EntityInfos.TryGetValue(type.FullName, out model))
+            if (EntityInfoManager.EntityInfos.TryGetValue(type.FullName, out model))
             {
                 return model;
             }

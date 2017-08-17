@@ -16,7 +16,7 @@ namespace Framework.Orm.Dapper.Core
 
     }
 
-    public class BaseRepository<TEntity> : BaseRepository, IBaseRepository<TEntity> where TEntity : BaseEntity
+    public class BaseRepository<TEntity> : BaseRepository, IBaseRepository<TEntity> where TEntity : BaseEntity, new()
     {
         private string dbKey = null;
         private string connectionString;
@@ -261,6 +261,105 @@ namespace Framework.Orm.Dapper.Core
         }
 
         /// <summary>
+        /// 删除（根据主键逻辑删除）
+        /// </summary>
+        /// <param name="entitys">实体对象</param>
+        /// <returns></returns>
+        public int Delete(params TEntity[] entitys)
+        {
+            if (entitys.Length == 0)
+            {
+                throw new ArgumentNullException("entitys不能为空或者Id不能为空");
+            }
+
+            foreach (var entity in entitys)
+            {
+                if (!entity.HasValue())
+                {
+                    throw new ArgumentNullException("entity不能为空或者Id不能为空");
+                }
+            }
+
+            if (!base.IsTransaction)
+            {
+                using (connection = new SqlConnection(ConnectionString))
+                {
+                    return connection.Delete<TEntity>(entitys, null);
+                }
+            }
+            else
+            {
+                return connection.Delete<TEntity>(entitys, null, transaction);
+            }
+        }
+
+        /// <summary>
+        ///  删除（根据指定条件逻辑删除）
+        /// </summary>
+        /// <param name="predicate">删除条件</param>
+        /// <returns></returns>
+        public int Delete(TEntity entitie, Expression<Func<TEntity, bool>> predicate)
+        {
+            var entities = new List<TEntity>() { entitie };
+
+            if (!base.IsTransaction)
+            {
+                using (connection = new SqlConnection(ConnectionString))
+                {
+                    return connection.Delete<TEntity>(entities, predicate);
+                }
+            }
+            else
+            {
+                return connection.Delete<TEntity>(entities, predicate, transaction);
+            }
+        }
+
+        /// <summary>
+        ///  删除（根据指定条件逻辑删除）
+        /// </summary>
+        /// <param name="predicate">删除条件</param>
+        /// <returns></returns>
+        public int Delete(IEnumerable<TEntity> entities, Expression<Func<TEntity, bool>> predicate)
+        {
+            if (!base.IsTransaction)
+            {
+                using (connection = new SqlConnection(ConnectionString))
+                {
+                    return connection.Delete<TEntity>(entities, predicate);
+                }
+            }
+            else
+            {
+                return connection.Delete<TEntity>(entities, predicate, transaction);
+            }
+        }
+
+        /// <summary>
+        ///  根据主键删除
+        /// </summary>
+        /// <param name="id">主键值</param>
+        /// <returns></returns>
+        public int Delete(Guid id)
+        {
+            var entity = new TEntity() { Id = id };
+            IEnumerable<TEntity> entities = new List<TEntity>() { entity };
+
+            if (!base.IsTransaction)
+            {
+                using (connection = new SqlConnection(ConnectionString))
+                {
+
+                    return connection.Delete<TEntity>(entities, null);
+                }
+            }
+            else
+            {
+                return connection.Delete<TEntity>(entities, null, transaction: transaction);
+            }
+        }
+
+        /// <summary>
         /// 使用SqlBulkCopy批量插入数据
         /// </summary>
         public void BulkInsert(IEnumerable<TEntity> entities)
@@ -319,7 +418,7 @@ namespace Framework.Orm.Dapper.Core
         /// <returns></returns>
         private static Tuple<string, DataTable> ToDataTable<T>(IEnumerable<T> entitys)
         {
-            var entityInfos = ConfigurationContainer.EntityInfoManager.EntityInfos;
+            var entityInfos = EntityInfoManager.EntityInfos;
 
             //检查实体集合不能为空
             var enumerable = entitys as T[] ?? entitys.ToArray();
@@ -371,12 +470,12 @@ namespace Framework.Orm.Dapper.Core
             {
                 using (connection = new SqlConnection(ConnectionString))
                 {
-                    return connection.Execute(sql, param);
+                    return connection.ExecuteExt(sql, param, isExecuteSql: true);
                 }
             }
             else
             {
-                return connection.Execute(sql, param, transaction);
+                return connection.ExecuteExt(sql, param, transaction, isExecuteSql: true);
             }
         }
 
@@ -384,7 +483,7 @@ namespace Framework.Orm.Dapper.Core
         {
             using (connection = GetConnection())
             {
-                return connection.ExecuteScalar<T>(sql, param);
+                return connection.ExecuteScalarExt<T>(sql, param);
             }
         }
 
@@ -392,7 +491,7 @@ namespace Framework.Orm.Dapper.Core
         {
             using (connection = GetConnection())
             {
-                var result = connection.Query<TEntity>(sql, param);
+                var result = connection.QueryExt<TEntity>(sql, param);
                 return result;
             }
         }
@@ -401,7 +500,7 @@ namespace Framework.Orm.Dapper.Core
         {
             using (connection = GetConnection())
             {
-                var result = connection.Query<T>(sql, param);
+                var result = connection.QueryExt<T>(sql, param);
                 return result;
             }
         }
